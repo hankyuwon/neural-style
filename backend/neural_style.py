@@ -230,7 +230,6 @@ def fmt_imsave(fmt, iteration):
 
 
 def main():
-
     (input_content, input_styles, input_output,
      input_iterations, input_overwrite) = input().split()
 

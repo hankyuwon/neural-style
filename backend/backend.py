@@ -1,6 +1,8 @@
 from fastapi import FastAPI, File, UploadFile
 from typing import List
 from pydantic import BaseModel
+from fastapi.responses import FileResponse
+
 # Copyright (c) 2015-2021 Anish Athalye. Released under GPLv3.
 
 import os
@@ -13,6 +15,21 @@ from PIL import Image
 import numpy as np
 
 from stylize import stylize
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # default arguments
@@ -62,14 +79,6 @@ class Default_arg:
     progress_write = None
 
 
-app = FastAPI()
-
-
-@app.post("/files/1")
-async def create_file(file: List[bytes] = File(...)):
-    return {"file_size": len(file)}
-
-
 @app.post("/files/")
 async def create_files(files: List[bytes] = File(...)):
     return {"file_sizes": [len(file) for file in files]}
@@ -84,20 +93,10 @@ async def create_upload_files(files: List[UploadFile] = File(...)):
             fp.write(contents)
 
     main(files[0].filename, files[1].filename)
-
-    return {"filenames": [file.filename for file in files]}
-
-
-@app.post("/fuck")
-async def root(item: Item):
-    main(item.iter)
-
-    return {"msg": "완벽하게 학습 끝끝"}
-
-
-@app.post("/fuck01")
-async def fuck01():
-    return {"msg": "fuck!!!"}
+    file_path = os.path.join(UPLOAD_DIRECTORY, "output.jpg")
+    if os.path.exists(file_path):
+        print('output 던지기 성공!')
+        return FileResponse(file_path, media_type="image/jpg", filename="image.jpg")
 
 
 def fmt_imsave(fmt, iteration):
@@ -115,7 +114,7 @@ def main(f1, f2):
     input_content = f1
     input_styles = f2
     input_output = "output.jpg"
-    input_iterations = 50
+    input_iterations = 5
     # https://stackoverflow.com/a/42121886
     key = "TF_CPP_MIN_LOG_LEVEL"
     if key not in os.environ:
