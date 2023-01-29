@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
+from typing import List
 from pydantic import BaseModel
 # Copyright (c) 2015-2021 Anish Athalye. Released under GPLv3.
 
@@ -64,9 +65,27 @@ class Default_arg:
 app = FastAPI()
 
 
-@app.get("/fuck")
-async def root():
-    return {"message": "Hello World"}
+@app.post("/files/1")
+async def create_file(file: List[bytes] = File(...)):
+    return {"file_size": len(file)}
+
+
+@app.post("/files/")
+async def create_files(files: List[bytes] = File(...)):
+    return {"file_sizes": [len(file) for file in files]}
+
+
+@app.post("/uploadfiles")
+async def create_upload_files(files: List[UploadFile] = File(...)):
+    UPLOAD_DIRECTORY = "./"
+    for file in files:
+        contents = await file.read()
+        with open(os.path.join(UPLOAD_DIRECTORY, file.filename), "wb") as fp:
+            fp.write(contents)
+
+    main(files[0].filename, files[1].filename)
+
+    return {"filenames": [file.filename for file in files]}
 
 
 @app.post("/fuck")
@@ -74,6 +93,11 @@ async def root(item: Item):
     main(item.iter)
 
     return {"msg": "완벽하게 학습 끝끝"}
+
+
+@app.post("/fuck01")
+async def fuck01():
+    return {"msg": "fuck!!!"}
 
 
 def fmt_imsave(fmt, iteration):
@@ -85,14 +109,13 @@ def fmt_imsave(fmt, iteration):
         raise ValueError("illegal format string '{}'".format(fmt))
 
 
-def main(iter):
+def main(f1, f2):
 
     # (input_content, input_styles, input_output, input_iterations, input_overwrite) = input().split()
-    input_content = "examples/iu.jpg"
-    input_styles = "examples/1-style.jpg"
-    input_output = "examples/fuckyou.jpg"
-    input_iterations = iter
-
+    input_content = f1
+    input_styles = f2
+    input_output = "output.jpg"
+    input_iterations = 50
     # https://stackoverflow.com/a/42121886
     key = "TF_CPP_MIN_LOG_LEVEL"
     if key not in os.environ:
@@ -216,6 +239,8 @@ def main(iter):
         ax.set_xlabel("iterations")
         ax.set_ylabel("loss")
         fig.savefig("{}/progress.png".format(os.path.dirname(input_output)))
+
+    return
 
 
 def imread(path):
