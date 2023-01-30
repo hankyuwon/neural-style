@@ -1,6 +1,6 @@
 import './App.css';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import React, { useEffect, useState, useRef } from "react";
 
 function App() {
@@ -41,7 +41,6 @@ function App() {
 
   return (
     <>
-      <button onClick={fuckTest}>aaaa</button>
       <form onSubmit={(e) => onSubmit(e)}>
         <input
           type="file"

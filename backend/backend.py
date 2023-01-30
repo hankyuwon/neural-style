@@ -114,7 +114,7 @@ def main(f1, f2):
     input_content = f1
     input_styles = f2
     input_output = "output.jpg"
-    input_iterations = 5
+    input_iterations = 50
     # https://stackoverflow.com/a/42121886
     key = "TF_CPP_MIN_LOG_LEVEL"
     if key not in os.environ:
