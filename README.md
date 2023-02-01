@@ -5,6 +5,10 @@ React & Fast API 방학 프로젝트 (2023-01-28 ~ 2023-01-29)
 기존에 존재하는 Neural Style Model 에서 API 통신이 가능하게 약간의 변형 후 React 웹에서 Content, Style Image 를 제출하면 Neural_Style Image를 받아볼 수 있게 만들었다.
 
 
+
+https://user-images.githubusercontent.com/98513704/215954884-94c07002-6cae-4507-9ab7-295fde7baa95.mp4
+
+
 ## Example 1
 
 <figure class = "third">
